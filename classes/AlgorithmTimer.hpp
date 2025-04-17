@@ -24,16 +24,19 @@ class AlgorithmTimer : public Timer {
             for (int step = 1; step < steps; ++step) {
                 int iterations = step * stepSize;
 
+                startSubTimer(); //Start timer for step
                 for (int i = 0; i < iterations; ++i) { //One step
                     (void)function();
                 }  
-                std::cout << "Step " << step << " (" << iterations << " times): " << this->getTimeNS() << "ns" << std::endl;
+
+                long long stepTime = this->getEndSubTimer();
+
+                std::cout << "Step " << step << " (" << iterations << " times): " << stepTime << "ns" << std::endl; //Return time for each step
                                     
                 std::ostringstream content;
-                content << step << "," << iterations << "," << this->getTimeNS() << "\n";
+                content << step << "," << iterations << "," << stepTime << "\n";
                 appendItem(content.str()); //Append this steps data to csv
             }
-            std::cout << "Time to run " << maxIterations << " times: " << this->getTimeNS() << "ns" << std::endl; 
         }
 };
 
