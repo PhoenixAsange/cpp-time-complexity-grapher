@@ -17,24 +17,34 @@ class AlgorithmTimer : public Timer {
         int steps;
 
     public:
-        AlgorithmTimer(const std::string name, const int maxIterations, const int steps, Function&& function) 
+        AlgorithmTimer(const std::string name, const int maxIterations, const int steps, const int trialsPerStep, Function&& function) 
         : Timer(name), name(name), maxIterations(maxIterations), steps(steps) {
+
             int stepSize = (maxIterations - 1) / (steps - 1); //Interpolates values between 1 and max iterations
-            
+
             for (int step = 1; step < steps; ++step) {
                 int iterations = step * stepSize;
+                long long totalTime = 0;
 
-                startSubTimer(); //Start timer for step
-                for (int i = 0; i < iterations; ++i) { //One step
-                    (void)function();
-                }  
+                for (int trial = 0; trial < trialsPerStep; ++trial) { //Averages time over trials per step 
+                    startSubTimer();
 
-                long long stepTime = this->getEndSubTimer();
+                    for (int i = 0; i < iterations; ++i) {
+                        (void)function();
+                    }  
 
-                std::cout << "Step " << step << " (" << iterations << " times): " << stepTime << "ns" << std::endl; //Return time for each step
+                    totalTime += this->getEndSubTimer(); //Accumulate average time for step
+
+                    std::cout << "Done";
+                    // std::cout << "Step " << step << ", trial " << trial << " (" << iterations << " iterations): " << avgTime << "ns" << std::endl; //
+                }
+
+                long long avgTime = totalTime / trialsPerStep; //Averages trials over step
+
+                // std::cout << "Step " << step << " (" << iterations * trialsPerStep << " times): " << avgTime << "ns average" << std::endl; //Total step time
                                     
                 std::ostringstream content;
-                content << step << "," << iterations << "," << stepTime << "\n";
+                content << step << "," << iterations << "," << avgTime << "\n";
                 appendItem(content.str()); //Append this steps data to csv
             }
         }
