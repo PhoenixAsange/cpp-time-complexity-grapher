@@ -34,8 +34,7 @@ class AlgorithmTimer : public Timer {
                     }  
 
                     totalTime += this->getEndSubTimer(); //Accumulate average time for step
-
-                    std::cout << "Done";
+                    
                     // std::cout << "Step " << step << ", trial " << trial << " (" << iterations << " iterations): " << avgTime << "ns" << std::endl; //
                 }
 
