@@ -1,8 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+
+# Create the directory if it doesn't exist
+os.makedirs('./graphs', exist_ok=True)
 
 #Load file
 algorithmDocument = input("File name: ")
+constantTime = input("Constant Time Algorithm (Default - True): ") or True
 name = input("Graph label (Default - file name): ") or algorithmDocument
 
 #
@@ -42,10 +47,11 @@ plt.title(f"{name} Avg Time per Operation")
 graphScale = df['scaled_avg_time'].max() -df['scaled_avg_time'].min()
 scaleMultipler = 2.5
 
-if graphScale < (graphScale * scaleMultipler): #Flattens constant time graphs
+if (constantTime == True): #Flattens constant time graphs
     plt.ylim(df['scaled_avg_time'].min() - (graphScale * scaleMultipler) , df['scaled_avg_time'].max() + (graphScale * scaleMultipler))
 
 plt.ticklabel_format(axis='y', style='plain')
 plt.grid(True)
 plt.tight_layout()
+plt.savefig(f'./graphs/{name}.png')
 plt.show()
