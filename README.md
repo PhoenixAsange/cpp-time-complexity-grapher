@@ -16,7 +16,7 @@
   The benchmark results are stored in CSV format and visualized with Python's <code>matplotlib</code> to generate clean, readable performance graphs.
 </p>
 
-<h3>⏱Timer Classes</h3>
+<h3>Timer Classes</h3>
 
 <ul>
   <li>
