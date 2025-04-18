@@ -21,7 +21,7 @@ class GraphDocumentGenerator {
             // Full path + file name
             std::string fullPath = basePath + name + ".csv";
             file.open(fullPath);
-            file << "step,iterations,time\n"; 
+            file << "step,iterations,time" << std::endl; 
         }
 
         ~GraphDocumentGenerator() {

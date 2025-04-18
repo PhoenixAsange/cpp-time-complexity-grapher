@@ -5,52 +5,66 @@ import os
 # Create the directory if it doesn't exist
 os.makedirs('./graphs', exist_ok=True)
 
-#Load file
+# Load file
 algorithmDocument = input("File name: ")
-constantTime = input("Constant Time Algorithm (Default - True): ") or True
-name = input("Graph label (Default - file name): ") or algorithmDocument
+constantTime = input("Constant Time Algorithm (T): ") or "true"
+dataMode = input("Input or Iteration? (Input): ") or "input"
 
-#
+xColumn = "iterations"  # Always use this column
+xLabel = "Input size" if dataMode.lower() == "input" else "Iterations"
+name = algorithmDocument
+
+# Read CSV
 df = pd.read_csv(f'./graph-documents/{algorithmDocument}.csv')
-df['avg_time'] = df['time'] / df['iterations'] #Calculate average time per iteration
 
+# Compute appropriate time value
+if dataMode.lower() == "input":
+    # Show total time (e.g., to reflect O(n), O(n^2), etc.)
+    df['plottable_time'] = df['time']
+else:
+    # Show average time per operation
+    df['plottable_time'] = df['time'] / df['iterations']
 
-max_time = df['avg_time'].max() #Set time bound
-
-#Calculate time unit
-if max_time < 1e3:
-    scale_factor = 1
+# Determine time unit scaling
+maxTime = df['plottable_time'].max()
+if maxTime < 1e3:
+    scaleFactor = 1
     unit = "ns"
-elif max_time < 1e6:
-    scale_factor = 1e3
+elif maxTime < 1e6:
+    scaleFactor = 1e3
     unit = "µs"
-elif max_time < 1e9:
-    scale_factor = 1e6
+elif maxTime < 1e9:
+    scaleFactor = 1e6
     unit = "ms"
-elif max_time < 60e9:
-    scale_factor = 1e9
+elif maxTime < 60e9:
+    scaleFactor = 1e9
     unit = "s"
 else:
-    scale_factor = 60e9
+    scaleFactor = 60e9
     unit = "min"
 
-df['scaled_avg_time'] = df['avg_time'] / scale_factor
+# Scale the time values
+df['scaled_time'] = df['plottable_time'] / scaleFactor
 
-
+# Plot
 plt.figure(figsize=(12, 8))
-plt.plot(df['iterations'], df['scaled_avg_time'], marker='o', linestyle='-')
+plt.plot(df[xColumn], df['scaled_time'], marker='o', linestyle='-')
 
-plt.xlabel("Iterations")
-plt.ylabel(f"Avg Time per Operation ({unit})")
-plt.title(f"{name} Avg Time per Operation")
+plt.xlabel(f"{xLabel} (n)")
+ylabel = "Avg Time per Operation" if dataMode.lower() != "input" else "Total Time"
+plt.ylabel(f"{ylabel} ({unit})")
+plt.title(f"{name} {ylabel}")
 
-graphScale = df['scaled_avg_time'].max() -df['scaled_avg_time'].min()
-scaleMultipler = 2.5
+# Adjust y-limits if graph is constant time
+graphScale = df['scaled_time'].max() - df['scaled_time'].min()
+scaleMultiplier = 1.5
+if str(constantTime).lower() in ["t", "true"]:
+    plt.ylim(
+        df['scaled_time'].min() - (graphScale * scaleMultiplier),
+        df['scaled_time'].max() + (graphScale * scaleMultiplier)
+    )
 
-if (constantTime == True): #Flattens constant time graphs
-    plt.ylim(df['scaled_avg_time'].min() - (graphScale * scaleMultipler) , df['scaled_avg_time'].max() + (graphScale * scaleMultipler))
-
-plt.ticklabel_format(axis='y', style='plain')
+plt.ticklabel_format(style='plain', useOffset=False, axis='both')  # No scientific notation
 plt.grid(True)
 plt.tight_layout()
 plt.savefig(f'./graphs/{name}.png')
