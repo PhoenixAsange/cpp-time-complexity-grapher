@@ -39,10 +39,11 @@ plt.xlabel("Iterations")
 plt.ylabel(f"Avg Time per Operation ({unit})")
 plt.title(f"{name} Avg Time per Operation")
 
-magic = df['scaled_avg_time'].max() -df['scaled_avg_time'].min()
+graphScale = df['scaled_avg_time'].max() -df['scaled_avg_time'].min()
+scaleMultipler = 2.5
 
-if df['scaled_avg_time'].max() - df['scaled_avg_time'].min() > magic / 2: #Flattens constant time graphs
-    plt.ylim(df['scaled_avg_time'].min() - magic, df['scaled_avg_time'].max() + magic)
+if graphScale < (graphScale * scaleMultipler): #Flattens constant time graphs
+    plt.ylim(df['scaled_avg_time'].min() - (graphScale * scaleMultipler) , df['scaled_avg_time'].max() + (graphScale * scaleMultipler))
 
 plt.ticklabel_format(axis='y', style='plain')
 plt.grid(True)
