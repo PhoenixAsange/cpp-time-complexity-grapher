@@ -19,7 +19,7 @@ private:
 //times the execution, and outputs the results to both console and CSV for later plotting via matplotlib.
 
 public:
-    AlgorithmTimerInput(const std::string& name, Function&& function, int maxInputs = 100000, int steps = 20, int trialsPerStep = 3) :
+    AlgorithmTimerInput(const std::string& name, Function&& function, const std::string listType = "unsorted", int maxInputs = 25000, int steps = 10, int trialsPerStep = 2) :
     Timer(name), name(name), function(function), maxInputs(maxInputs), 
     steps(steps), trialsPerStep(trialsPerStep) {
 
@@ -30,12 +30,46 @@ public:
             long long totalTime = 0;
 
             for (int trial = 0; trial < trialsPerStep; ++trial) {
+
+                //Make vector
                 std::vector<int> inputs;
 
-                for (int i = 0; i < iterations; ++i) { //Make vector
-                    inputs.push_back(i);
+                if (listType == "sorted") {
+                    for (int i = 0; i < iterations; ++i) {
+                        inputs.push_back(i);
+                    }
+                }
+                else if (listType == "random") {
+                    for (int i = 0; i < iterations; ++i) {
+                        inputs.push_back(rand());
+                    }
+                }
+                else if (listType == "reverse") { // Reverse sorted list
+                    for (int i = iterations - 1; i >= 0; --i) {
+                        inputs.push_back(i);
+                    }
+                }
+                else if (listType == "extreme") { // Extreme value distribution
+                    for (int i = 0; i < iterations; ++i) {
+                        if (i % 20 == 0) {
+                            inputs.push_back(rand() % 100000 + 10000); // occasional large outlier
+                        } else {
+                            inputs.push_back(rand() % 10); // mostly small values
+                        }
+                    }
+                }
+                else if (listType == "duplicates") { // Many duplicate values
+                    int values[] = {1, 2, 3, 4, 5}; // Small fixed set of values
+                    for (int i = 0; i < iterations; ++i) {
+                        inputs.push_back(values[rand() % 5]);
+                    }
+                }
+                else {
+                    std::cout << "Unknown" << std::endl;
                 }
 
+                //Run vector on benchmark 
+                std::cout << "Done" << std::endl;
                 this->startSubTimer();
                 (void)function(inputs);
             

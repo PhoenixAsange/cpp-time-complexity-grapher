@@ -2,10 +2,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-# Create the directory if it doesn't exist
 os.makedirs('./graphs', exist_ok=True)
 
-# Load file
+print("Available files:")
+for file in os.listdir("./graph-documents"):
+    if file.endswith(".csv"):
+        print(" -", file[:-4])  # Print without .csv
+
 algorithmDocument = input("File name: ")
 constantTime = input("Constant Time Algorithm (T): ") or "true"
 dataMode = input("Input or Iteration? (Input): ") or "input"
@@ -14,18 +17,13 @@ xColumn = "iterations"  # Always use this column
 xLabel = "Input size" if dataMode.lower() == "input" else "Iterations"
 name = algorithmDocument
 
-# Read CSV
 df = pd.read_csv(f'./graph-documents/{algorithmDocument}.csv')
 
-# Compute appropriate time value
 if dataMode.lower() == "input":
-    # Show total time (e.g., to reflect O(n), O(n^2), etc.)
     df['plottable_time'] = df['time']
 else:
-    # Show average time per operation
     df['plottable_time'] = df['time'] / df['iterations']
 
-# Determine time unit scaling
 maxTime = df['plottable_time'].max()
 if maxTime < 1e3:
     scaleFactor = 1
@@ -43,10 +41,8 @@ else:
     scaleFactor = 60e9
     unit = "min"
 
-# Scale the time values
 df['scaled_time'] = df['plottable_time'] / scaleFactor
 
-# Plot
 plt.figure(figsize=(12, 8))
 plt.plot(df[xColumn], df['scaled_time'], marker='o', linestyle='-')
 
@@ -55,7 +51,6 @@ ylabel = "Avg Time per Operation" if dataMode.lower() != "input" else "Total Tim
 plt.ylabel(f"{ylabel} ({unit})")
 plt.title(f"{name} {ylabel}")
 
-# Adjust y-limits if graph is constant time
 graphScale = df['scaled_time'].max() - df['scaled_time'].min()
 scaleMultiplier = 1.5
 if str(constantTime).lower() in ["t", "true"]:
