@@ -29,7 +29,7 @@
 
 <h2>Example</h2>
 <p>
-  ![Heap Sort on Extreme Value Distributions List](https://github.com/user-attachments/assets/dc7f60c8-5ce2-4fe6-83d2-613d3a0e7d78)
+  ![Heap Sort Example](images/heap_sort_example.png)
 </p>
 
 <h2>Future Improvements</h2>
