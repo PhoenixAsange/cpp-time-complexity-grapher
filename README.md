@@ -29,7 +29,7 @@
 
 <h2>Example</h2>
 <p>
-  ![Heap Sort Example](images/heap-sort-example.png)
+  ![Heap Sort Example](https://github.com/PhoenixAsange/cpp-time-complexity-grapher/blob/04df94a221ab4ee8caa6e7ef69b2ceed7172c3d6/images/heap-sort-extreme-value-distributions.png)
 </p>
 
 <h2>Future Improvements</h2>
