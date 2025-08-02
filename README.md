@@ -29,7 +29,7 @@
 
 <h2>Example</h2>
 <p>
-  ![Heap Sort Example](images/heap_sort_example.png)
+  ![Heap Sort Example](images/heap-sort-example.png)
 </p>
 
 <h2>Future Improvements</h2>
